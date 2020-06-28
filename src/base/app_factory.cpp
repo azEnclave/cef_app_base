@@ -1,10 +1,15 @@
+#include <src/shared/resources_util.hpp>
+#include <iostream>
 #include "src/shared/browser_util.hpp"
 #include "src/shared/app_factory.hpp"
 #include "client.hpp"
 
 namespace base
 {
-	const char kStartupURL[] = "https://www.google.com";
+	std::string GetStartupURL()
+	{
+		return shared::GetResourcePath(shared::rootDir) + std::string("index.html");
+	}
 
 	// Minimal implementation of CefApp for the browser process.
 	class BrowserApp : public CefApp, public CefBrowserProcessHandler
@@ -29,7 +34,8 @@ namespace base
 			{
 #if defined(OS_MACOSX)
 				// Disable the macOS keychain prompt. Cookies will not be encrypted.
-		  command_line->AppendSwitch("use-mock-keychain");
+
+		  		command_line->AppendSwitch("use-mock-keychain");
 #endif
 			}
 		}
@@ -37,8 +43,9 @@ namespace base
 		// CefBrowserProcessHandler methods:
 		void OnContextInitialized() OVERRIDE
 		{
+			std::cout<<GetStartupURL();
 			// Create the browser window.
-			shared::CreateBrowser(new Client(), kStartupURL, CefBrowserSettings());
+			shared::CreateBrowser(new Client(), GetStartupURL(), CefBrowserSettings());
 		}
 
 	private:
@@ -53,5 +60,17 @@ namespace shared
 	CefRefPtr<CefApp> CreateBrowserProcessApp()
 	{
 		return new base::BrowserApp();
+	}
+
+	// No CefApp for other sub-processes.
+	CefRefPtr <CefApp> CreateOtherProcessApp()
+	{
+		return NULL;
+	}
+
+	// No CefApp for the renderer sub-process.
+	CefRefPtr<CefApp> CreateRendererProcessApp()
+	{
+		return NULL;
 	}
 }

@@ -1,4 +1,3 @@
-
 #include "browser_util.hpp"
 
 #include "include/cef_command_line.h"
@@ -13,8 +12,7 @@ namespace shared
 	class WindowDelegate : public CefWindowDelegate
 	{
 		public:
-			explicit WindowDelegate(CefRefPtr<CefBrowserView> browser_view)
-					: browser_view_(browser_view)
+			explicit WindowDelegate(const CefRefPtr<CefBrowserView>& browser_view): browser_view_(browser_view)
 			{}
 
 			void OnWindowCreated(CefRefPtr<CefWindow> window) OVERRIDE
@@ -29,7 +27,7 @@ namespace shared
 
 			void OnWindowDestroyed(CefRefPtr<CefWindow> window) OVERRIDE
 			{
-				browser_view_ = NULL;
+				browser_view_ = nullptr;
 			}
 
 			bool CanClose(CefRefPtr<CefWindow> window) OVERRIDE
@@ -55,20 +53,17 @@ namespace shared
 
 		private:
 			CefRefPtr<CefBrowserView> browser_view_;
-
-		IMPLEMENT_REFCOUNTING(WindowDelegate);
+			IMPLEMENT_REFCOUNTING(WindowDelegate);
 			DISALLOW_COPY_AND_ASSIGN(WindowDelegate);
 	};
 
-	void CreateBrowser(CefRefPtr<CefClient> client,
-					   const CefString &startup_url,
-					   const CefBrowserSettings &settings)
+	void CreateBrowser(const CefRefPtr<CefClient> &client, const CefString &startup_url, const CefBrowserSettings &settings)
 	{
 		CEF_REQUIRE_UI_THREAD();
 
 #if defined(OS_WIN) || defined(OS_LINUX)
-		CefRefPtr<CefCommandLine> command_line =
-				CefCommandLine::GetGlobalCommandLine();
+
+		const CefRefPtr<CefCommandLine> command_line = CefCommandLine::GetGlobalCommandLine();
 
 		// Create the browser using the Views framework if "--use-views" is specified
 		// via the command-line. Otherwise, create the browser using the native
@@ -95,13 +90,11 @@ namespace shared
 
 #if defined(OS_WIN)
 			// On Windows we need to specify certain flags that will be passed to
-	// CreateWindowEx().
-	window_info.SetAsPopup(NULL, "examples");
+			// CreateWindowEx().
+			window_info.SetAsPopup(NULL, "base");
 #endif
-
 			// Create the browser window.
-			CefBrowserHost::CreateBrowser(window_info, client, startup_url, settings,
-										  NULL, NULL);
+			CefBrowserHost::CreateBrowser(window_info, client, startup_url, settings, NULL, NULL);
 		}
 	}
 

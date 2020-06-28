@@ -9,20 +9,20 @@ namespace shared
 	// implementations.
 
 	// Called from CefDisplayHandler methods:
-	void OnTitleChange(CefRefPtr<CefBrowser> browser, const CefString &title);
+	void OnTitleChange(const CefRefPtr<CefBrowser>& browser, const CefString &title);
 
 	// Called from CefLifeSpanHandler methods:
-	void OnAfterCreated(CefRefPtr<CefBrowser> browser);
+	void OnAfterCreated(const CefRefPtr<CefBrowser>& browser);
 
-	bool DoClose(CefRefPtr<CefBrowser> browser);
+	bool DoClose(const CefRefPtr<CefBrowser>& browser);
 
-	void OnBeforeClose(CefRefPtr<CefBrowser> browser);
+	void OnBeforeClose(const CefRefPtr<CefBrowser>& browser);
 
 	// Platform-specific implementation.
 	void PlatformTitleChange(CefRefPtr<CefBrowser> browser, const CefString &title);
 
 	// Returns the contents of |request| as a string.
-	std::string DumpRequestContents(CefRefPtr<CefRequest> request);
+	std::string DumpRequestContents(const CefRefPtr<CefRequest>& request);
 
 }
 #endif

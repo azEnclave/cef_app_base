@@ -1,4 +1,3 @@
-
 #include "client_manager.hpp"
 
 #include "include/cef_app.h"
@@ -6,7 +5,7 @@
 
 namespace shared
 {
-	ClientManager *g_manager = NULL;
+	ClientManager *g_manager = nullptr;
 
 	ClientManager::ClientManager() : is_closing_(false)
 	{
@@ -17,7 +16,7 @@ namespace shared
 	{
 		DCHECK(thread_checker_.CalledOnValidThread());
 		DCHECK(browser_list_.empty());
-		g_manager = NULL;
+		g_manager = nullptr;
 	}
 
 	// static

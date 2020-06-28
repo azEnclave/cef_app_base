@@ -9,9 +9,7 @@ namespace shared
 	// CefBrowserProcessHandler::OnContextInitialized method. Respects the
 	// "--use-views" command-line flag if specified. Must be called on the browser
 	// process UI thread.
-	void CreateBrowser(CefRefPtr<CefClient> client,
-					   const CefString& startup_url,
-					   const CefBrowserSettings& settings);
+	void CreateBrowser(const CefRefPtr<CefClient>& client, const CefString& startup_url, const CefBrowserSettings& settings);
 }
 
 #endif

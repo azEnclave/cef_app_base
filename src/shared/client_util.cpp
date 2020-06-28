@@ -10,7 +10,7 @@
 
 namespace shared
 {
-	void OnTitleChange(CefRefPtr<CefBrowser> browser, const CefString &title)
+	void OnTitleChange(const CefRefPtr<CefBrowser>& browser, const CefString &title)
 	{
 		CEF_REQUIRE_UI_THREAD();
 
@@ -32,7 +32,7 @@ namespace shared
 		}
 	}
 
-	void OnAfterCreated(CefRefPtr<CefBrowser> browser)
+	void OnAfterCreated(const CefRefPtr<CefBrowser>& browser)
 	{
 		CEF_REQUIRE_UI_THREAD();
 
@@ -40,7 +40,7 @@ namespace shared
 		ClientManager::GetInstance()->OnAfterCreated(browser);
 	}
 
-	bool DoClose(CefRefPtr<CefBrowser> browser)
+	bool DoClose(const CefRefPtr<CefBrowser>& browser)
 	{
 		CEF_REQUIRE_UI_THREAD();
 
@@ -54,7 +54,7 @@ namespace shared
 		return false;
 	}
 
-	void OnBeforeClose(CefRefPtr<CefBrowser> browser)
+	void OnBeforeClose(const CefRefPtr<CefBrowser>& browser)
 	{
 		CEF_REQUIRE_UI_THREAD();
 
@@ -62,7 +62,7 @@ namespace shared
 		ClientManager::GetInstance()->OnBeforeClose(browser);
 	}
 
-	std::string DumpRequestContents(CefRefPtr<CefRequest> request)
+	std::string DumpRequestContents(const CefRefPtr<CefRequest>& request)
 	{
 		std::stringstream ss;
 
@@ -102,7 +102,8 @@ namespace shared
 						if (element->GetBytesCount() == 0)
 						{
 							ss << "(empty)";
-						} else
+						}
+						else
 						{
 							// retrieve the data.
 							size_t size = element->GetBytesCount();
@@ -111,7 +112,8 @@ namespace shared
 							ss << std::string(bytes, size);
 							delete[] bytes;
 						}
-					} else if (element->GetType() == PDE_TYPE_FILE)
+					}
+					else if (element->GetType() == PDE_TYPE_FILE)
 					{
 						ss << "\n\tFile: " << std::string(element->GetFile());
 					}

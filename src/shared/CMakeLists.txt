@@ -14,15 +14,27 @@ set(SRC_SHARED_COMMON
         main.hpp
         main_util.cpp
         main_util.hpp
+        resources_util.cpp
+        resources_util.hpp
         )
 
 set(SRC_SHARED_LINUX
         client_util_linux.cpp
         main_linux.cpp
+        resources_util_linux.cpp
+        resources_util_posix.cpp
+        )
+
+set(SRC_SHARED_OSX
+        resources_util_posix.cpp
         )
 
 if(OS_LINUX)
     list(APPEND SRC_SHARED_COMMON ${SRC_SHARED_LINUX})
+endif()
+
+if(OS_MACOSX)
+    list(APPEND SRC_SHARED_COMMON ${SRC_SHARED_OSX})
 endif()
 
 APPEND_PLATFORM_SOURCES(SRC_SHARED_COMMON)
