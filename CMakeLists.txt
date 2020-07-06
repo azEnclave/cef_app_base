@@ -82,7 +82,7 @@ add_subdirectory(${CEF_LIBCEF_DLL_WRAPPER_PATH} libcef_dll_wrapper)
 # Allow includes relative to the current source directory.
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-# include scripts from the base CEF git repo
+# include scripts from the main CEF git repo
 include_directories(${CEF_INCLUDE_PATH})
 
 # Include application targets.

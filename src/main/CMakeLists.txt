@@ -4,9 +4,16 @@
 
 set(SRC_BASE
         app_factory.cpp
+        browser_process.cpp
+        browser_process.hpp
         client.cpp
         client.hpp
-        main.cpp)
+        main.cpp
+        message_handler.cpp
+        message_handler.hpp
+        render_process.cpp
+        render_process.hpp
+        )
 
 set(VIEW_RESOURCES resources/index.html)
 set(VIEW_RESOURCES_WIN resources/win)

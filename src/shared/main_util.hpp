@@ -1,27 +1,31 @@
-#ifndef CUSTOM_CEF_APP_MAIN_UTIL_HPP
-#define CUSTOM_CEF_APP_MAIN_UTIL_HPP
+#ifndef CUSTOM_CEF_APP_MAIN_UTIL_H
+#define CUSTOM_CEF_APP_MAIN_UTIL_H
 
 #include <include/cef_command_line.h>
 
 namespace shared
 {
-	// This file provides functionality common to all program entry point
-	// implementations.
+    // Process types that may have different CefApp instances.
+    enum ProcessType
+    {
+        PROCESS_TYPE_BROWSER,
+        PROCESS_TYPE_RENDERER,
+        PROCESS_TYPE_OTHER,
+    };
 
-	// Create a new CommandLine object for use before CEF initialization.
-	CefRefPtr <CefCommandLine> CreateCommandLine(const CefMainArgs &main_args);
+    // Store all possible process type names
+    struct ProcessTypeName
+    {
+        const std::string zygoteProcess = "zygote";
+        const std::string renderProcess = "renderer";
+        const std::string utilityProcess = "utility";
+        const std::string processTypeSwitch = "type";
+    };
 
-	// Process types that may have different CefApp instances.
-	enum ProcessType
-	{
-		PROCESS_TYPE_BROWSER,
-		PROCESS_TYPE_RENDERER,
-		PROCESS_TYPE_OTHER,
-	};
+    CefRefPtr<CefCommandLine> createCommandLine(const CefMainArgs &mainArgs);
 
-	// Determine the process type based on command-line arguments.
-	ProcessType GetProcessType(const CefRefPtr <CefCommandLine> &command_line);
-
-}  // namespace shared
+    // Determine the process type based on command-line arguments.
+    ProcessType getProcessType(const CefRefPtr<CefCommandLine> &cefCommandLine);
+}
 
 #endif

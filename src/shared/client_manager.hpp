@@ -3,45 +3,47 @@
 
 #include <list>
 
-#include <include/base/cef_thread_checker.h>
-#include <include/cef_browser.h>
+#include "include/base/cef_thread_checker.h"
+#include "include/cef_browser.h"
 
 namespace shared
 {
-	// Manages multiple CefBrowser instances. All methods must be called on the
-	// main application thread (browser process UI thread).
-	class ClientManager
-	{
-		public:
-			ClientManager();
 
-			~ClientManager();
+// Manages multiple CefBrowser instances. All methods must be called on the
+// main application thread (browser process UI thread).
+    class ClientManager
+    {
+    public:
+        ClientManager();
 
-			// Returns the singleton instance of this object.
-			static ClientManager *GetInstance();
+        ~ClientManager();
 
-			// Called from CefLifeSpanHandler methods:
-			void OnAfterCreated(CefRefPtr <CefBrowser> browser);
+        // Returns the singleton instance of this object.
+        static ClientManager *GetInstance();
 
-			void DoClose(CefRefPtr <CefBrowser> browser);
+        // Called from CefLifeSpanHandler methods:
+        void OnAfterCreated(CefRefPtr<CefBrowser> browser);
 
-			void OnBeforeClose(CefRefPtr <CefBrowser> browser);
+        void DoClose(CefRefPtr<CefBrowser> browser);
 
-			// Request that all existing browser windows close.
-			void CloseAllBrowsers(bool force_close);
+        void OnBeforeClose(const CefRefPtr<CefBrowser> &browser);
 
-			// Returns true if the last browser instance is closing.
-			bool IsClosing() const;
+        // Request that all existing browser windows close.
+        void CloseAllBrowsers(bool force_close);
 
-		private:
-			base::ThreadChecker thread_checker_;
+        // Returns true if the last browser instance is closing.
+        bool IsClosing() const;
 
-			bool is_closing_;
+    private:
+        base::ThreadChecker threadChecker;
 
-			// List of existing browsers.
-			typedef std::list <CefRefPtr<CefBrowser>> BrowserList;
-			BrowserList browser_list_;
-	};
+        bool isClosing;
+
+        // List of existing browsers.
+        typedef std::list<CefRefPtr<CefBrowser>> BrowserList;
+        BrowserList browserList;
+    };
+
 }
 
 #endif

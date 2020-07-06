@@ -25,8 +25,8 @@ namespace shared
 
 #if defined(OS_POSIX)
 
-	// Retrieve the directory containing resource files on Linux and macOS.
-	std::string GetResourceDir();
+	// Retrieve the directory containing resource files on Linux and macOS. Returns false if
+	std::string GetProjectExecutableDir();
 
 #endif
 
@@ -62,7 +62,6 @@ namespace shared
 	// Retrieve |resource_path| contents as a CefResourceHandler. Returns NULL if
 	// the resource is not found.
 	CefRefPtr<CefResourceHandler> GetResourceHandler(const std::string &resource_path);
-
 }
 
 #endif

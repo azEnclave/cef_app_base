@@ -9,7 +9,6 @@
 
 namespace shared
 {
-
 	// Entry point function shared by executable targets.
 #if defined(OS_WIN)
 	int APIENTRY wWinMain(HINSTANCE hInstance);

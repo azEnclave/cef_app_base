@@ -1,3 +1,4 @@
+#include <iostream>
 #include "resources_util.hpp"
 
 #include "include/cef_parser.h"
@@ -5,7 +6,12 @@
 
 namespace shared
 {
-	const std::string rootDir = GetResourceDir();
+
+#if defined(OS_LINUX)
+    const std::string rootDir = GetProjectExecutableDir();
+#elif defined(OS_WIN)
+	const std::string rootDir = "";
+#endif
 
 	// Returns |url| without the query or fragment components, if any.
 	std::string GetUrlWithoutQueryOrFragment(const std::string &url)
@@ -20,6 +26,7 @@ namespace shared
 
 	std::string GetResourcePath(const std::string &url)
 	{
+	    std::cout<<"Attempted to get resource path:"<<url;
 		if (url.find(rootDir) != 0U)
 			return std::string();
 

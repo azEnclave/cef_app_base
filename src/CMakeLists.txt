@@ -68,4 +68,4 @@ endmacro()
 add_subdirectory(shared)
 
 # Base target
-add_subdirectory(base)
+add_subdirectory(main)

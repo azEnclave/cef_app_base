@@ -11,11 +11,13 @@ set(SRC_SHARED_COMMON
         client_manager.hpp
         client_util.cpp
         client_util.hpp
-        main.hpp
-        main_util.cpp
         main_util.hpp
+        main_util.cpp
+        main.hpp
         resources_util.cpp
         resources_util.hpp
+        window_delegate.cpp
+        window_delegate.hpp
         )
 
 set(SRC_SHARED_LINUX

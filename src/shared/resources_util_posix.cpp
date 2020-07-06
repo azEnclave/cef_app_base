@@ -16,12 +16,12 @@ namespace shared
 
 	bool ReadFileToString(const char *path, std::string &data)
 	{
-		// Implementation adapted from base/file_util.cc
+		// Implementation adapted from main/file_util.cc
 		FILE *file = fopen(path, "rb");
 		if (!file)
 			return false;
 
-		char buf[1 << 16];
+		char buf[UINT16_MAX];
 		size_t len;
 		while ((len = fread(buf, 1, sizeof(buf), file)) > 0)
 			data.append(buf, len);
@@ -33,8 +33,8 @@ namespace shared
 	bool GetResourceString(const std::string &resource_path,
 						   std::string &out_data)
 	{
-		std::string path;
-		if (!GetResourceDir(path))
+		std::string path = GetProjectExecutableDir();
+		if (path.empty())
 			return false;
 
 		path.append("/");
@@ -45,8 +45,8 @@ namespace shared
 
 	CefRefPtr <CefStreamReader> GetResourceReader(const std::string &resource_path)
 	{
-		std::string path;
-		if (!GetResourceDir(path))
+        std::string path = GetProjectExecutableDir();
+		if (path.empty())
 			return nullptr;
 
 		path.append("/");
