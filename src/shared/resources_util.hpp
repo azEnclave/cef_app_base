@@ -20,9 +20,6 @@ namespace shared
 	// macOS). On Windows resource files are loaded from BINARY resources_files built into
 	// the executable (see GetResourceId comments for details).
 
-	// Origin for loading local test resources_files.
-	extern const std::string rootDir;
-
 #if defined(OS_POSIX)
 
 	// Retrieve the directory containing resource files on Linux and macOS. Returns false if
@@ -50,6 +47,8 @@ namespace shared
 	// "resource_manager" target for example usage.
 	CefResourceManager::Provider* CreateBinaryResourceProvider(const std::string& root_url);
 #endif  // defined(OS_WIN)
+
+	std::string GetResourceDir();
 
 	// Retrieve |resource_path| contents as a std::string. Returns false if the
 	// resource is not found.

@@ -1,3 +1,4 @@
+#include <iostream>
 #include "message_handler.hpp"
 
 namespace main
@@ -10,6 +11,7 @@ namespace main
     {
         // Only handle messages from the startup URL.
         const std::string &url = frame->GetURL();
+
         if (url.find(startupURL) != 0)
             return false;
 

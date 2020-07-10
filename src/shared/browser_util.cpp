@@ -1,6 +1,6 @@
 #include <include/wrapper/cef_helpers.h>
 #include <include/views/cef_browser_view.h>
-#include "include/views/cef_window.h"
+#include <include/views/cef_window.h>
 #include <include/cef_command_line.h>
 
 #include "browser_util.hpp"
@@ -23,7 +23,6 @@ namespace shared
 #else
         const bool use_views = false;
 #endif
-
 
         if (use_views)
         {

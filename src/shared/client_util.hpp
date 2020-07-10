@@ -20,7 +20,7 @@ namespace shared
     void PlatformTitleChange(CefRefPtr<CefBrowser> browser, const CefString& title);
 
     // Returns the contents of |request| as a string.
-    std::string DumpRequestContents(CefRefPtr<CefRequest> request);
+    std::string DumpRequestContents(const CefRefPtr<CefRequest>& request);
 }
 
 #endif

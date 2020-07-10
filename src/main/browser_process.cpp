@@ -1,17 +1,21 @@
-#include "client.hpp"
+#include "applicationSettings.hpp"
 #include "browser_process.hpp"
+#include "client.hpp"
+#include "scheme_handler.hpp"
 #include "src/shared/browser_util.hpp"
 
 namespace main
 {
     void CefBrowserApp::OnContextInitialized()
     {
+        // Register the custom scheme handler factory.
+        RegisterSchemeHandlerFactory();
+
         // Create the browser window.
-        shared::CreateBrowser(new Client(startupURL), startupURL,CefBrowserSettings());
+        shared::CreateBrowser(new Client(startupURL), startupURL, CefBrowserSettings());
     }
 
-    void
-    CefBrowserApp::OnBeforeCommandLineProcessing(const CefString &process_type, CefRefPtr<CefCommandLine> command_line)
+    void CefBrowserApp::OnBeforeCommandLineProcessing(const CefString &process_type, CefRefPtr<CefCommandLine> command_line)
     {
         // Command-line flags can be modified in this callback.
         // |process_type| is empty for the browser process.
@@ -26,7 +30,9 @@ namespace main
 
     void CefBrowserApp::OnRegisterCustomSchemes(CefRawPtr<CefSchemeRegistrar> registrar)
     {
-        CefApp::OnRegisterCustomSchemes(registrar);
+        // Register the custom scheme as standard and secure.
+        // Must be the same implementation in all processes.
+        registrar->AddCustomScheme(config::APP_URL_SCHEME, config::APP_SCHEME_REGISTRATION_OPTIONS);
     }
 
     CefRefPtr<CefBrowserProcessHandler> CefBrowserApp::GetBrowserProcessHandler()

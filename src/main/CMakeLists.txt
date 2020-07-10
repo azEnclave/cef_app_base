@@ -3,6 +3,8 @@
 #
 
 set(SRC_BASE
+        applicationSettings.cpp
+        applicationSettings.hpp
         app_factory.cpp
         browser_process.cpp
         browser_process.hpp
@@ -13,7 +15,10 @@ set(SRC_BASE
         message_handler.hpp
         render_process.cpp
         render_process.hpp
-        )
+        scheme_handler.cpp
+        scheme_handler.hpp
+        other_process.cpp
+        other_process.hpp)
 
 set(VIEW_RESOURCES resources/index.html)
 set(VIEW_RESOURCES_WIN resources/win)
@@ -44,6 +49,7 @@ if(OS_LINUX)
     SET_PROJECT_EXECUTABLE_TARGET_PROPERTIES(${EXECUTABLE_NAME})
 
     add_dependencies(${EXECUTABLE_NAME} "${SHARED_TARGET}")
+    # target_link_libraries(${EXECUTABLE_NAME} "${CEF_TARGET}")
     target_link_libraries(${EXECUTABLE_NAME} "${SHARED_TARGET}")
 
     # COPY THE RESOURCE DIRECTORY TO THE BUILD DIR

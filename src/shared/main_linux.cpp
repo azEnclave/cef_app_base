@@ -1,13 +1,13 @@
-#include "main.hpp"
-#include "main_util.hpp"
-#include "app_factory.hpp"
-#include "client_manager.hpp"
-#include "resources_util.hpp"
-
 #include <X11/Xlib.h>
 #include <include/cef_command_line.h>
 #include <include/cef_app.h>
 #include <iostream>
+
+#include "main.hpp"
+#include "main_util.hpp"
+#include "app_factory.hpp"
+#include "client_manager.hpp"
+#include <src/main/applicationSettings.hpp>
 
 namespace shared
 {
@@ -46,6 +46,9 @@ namespace shared
 	// Entry point function for all processes.
 	int main(int argc, char *argv[])
 	{
+	    std::cout<<config::GetStartupURL();
+	    std::cout<<std::endl;
+
 	    XSetErrorHandler(XErrorHandlerImpl);
 	    XSetIOErrorHandler(XIOErrorHandlerImpl);
 
@@ -80,7 +83,7 @@ namespace shared
 
         if (exit_code >= 0)
         {
-            std::cout<<"EXIT CODE "<<exit_code<<std::endl;
+            std::cout<<"\n process type:" << getProcessType(cefCommandLine) << " terminated with exit code: "<<exit_code<<std::endl;
             // The sub-process terminated, exit now.
             return exit_code;
         }
@@ -89,7 +92,7 @@ namespace shared
 
         CefSettings cefSettings;
         cefSettings.command_line_args_disabled = false;
-        cefSettings.log_severity = LOGSEVERITY_ERROR;
+        cefSettings.log_severity = LOGSEVERITY_INFO;
         //cefSettings.resources_dir_path = (cef_string_utf16_t) test; // shared::resourceFolderPath;
         //cefSettings.multi_threaded_message_loop = true;
         //cefSettings.remote_debugging_port = 8081;

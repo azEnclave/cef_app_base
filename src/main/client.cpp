@@ -1,14 +1,89 @@
-#include <src/shared/resources_util.hpp>
-#include <src/shared/client_util.hpp>
 #include <iostream>
+#include <include/wrapper/cef_stream_resource_handler.h>
 
 #include "client.hpp"
 #include "message_handler.hpp"
+#include "applicationSettings.hpp"
+#include <src/shared/resources_util.hpp>
+#include <src/shared/client_util.hpp>
 
 namespace main
 {
+    // Demonstrate a custom Provider implementation by dumping the request contents.
+    class RequestDumpResourceProvider : public CefResourceManager::Provider
+    {
+    public:
+        explicit RequestDumpResourceProvider(const std::string &url) : url_(url)
+        {
+            DCHECK(!url.empty());
+        }
+
+        bool OnRequest(scoped_refptr<CefResourceManager::Request> request) OVERRIDE
+        {
+            CEF_REQUIRE_IO_THREAD();
+
+            const std::string &url = request->url();
+            if (url != url_)
+            {
+                // Not handled by this provider.
+                return false;
+            }
+
+            const std::string &dump = shared::DumpRequestContents(request->request());
+            std::string str = "<html><body bgcolor=\"white\"><pre>" + dump + "</pre></body></html>";
+            CefRefPtr<CefStreamReader> stream = CefStreamReader::CreateForData(
+                    static_cast<void *>(const_cast<char *>(str.c_str())), str.size());
+
+            DCHECK(stream.get());
+
+            request->Continue(new CefStreamResourceHandler("text/html", stream));
+            return true;
+        }
+
+    private:
+        std::string url_;
+
+        DISALLOW_COPY_AND_ASSIGN(RequestDumpResourceProvider);
+    };
+
+    // Add example Providers to the CefResourceManager.
+    void SetupResourceManager(const CefRefPtr<CefResourceManager>& resource_manager)
+    {
+        if (!CefCurrentlyOn(TID_IO))
+        {
+            // Execute on the browser IO thread.
+            CefPostTask(TID_IO, base::Bind(SetupResourceManager, resource_manager));
+            return;
+        }
+
+        // Add the Provider for dumping request contents.
+        resource_manager->AddProvider(
+                new RequestDumpResourceProvider(shared::GetProjectExecutableDir() + "request.html"), 0,
+                std::string());
+
+// Add the Provider for bundled resource files.
+#if defined(OS_WIN)
+        // Read BINARY resources from the executable.
+        resource_manager->AddProvider(
+        shared::CreateBinaryResourceProvider(test_origin), 100, std::string());
+#elif defined(OS_POSIX)
+        // Read individual resource files from a directory on disk.
+        std::string resource_dir = shared::GetResourceDir();
+
+        if (!resource_dir.empty())
+        {
+            resource_manager->AddDirectoryProvider(config::GetStartupURL(), resource_dir, 100,
+                                                   std::string());
+        }
+#endif
+    }
+
+
     Client::Client(const CefString &startup_url) : startupURL(startup_url), clientBrowserCounter(0)
-    {}
+    {
+        resourceManager = new CefResourceManager();
+        SetupResourceManager(resourceManager);
+    }
 
     void Client::OnTitleChange(CefRefPtr<CefBrowser> browser, const CefString &title)
     {
@@ -83,17 +158,7 @@ namespace main
     Client::GetResourceHandler(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefRefPtr<CefRequest> request)
     {
         CEF_REQUIRE_IO_THREAD();
-        const std::string& url = request->GetURL();
-        // This is a minimal implementation of resource loading. For more complex
-        // usage (multiple files, zip archives, custom handlers, etc.) you might want
-        // to use CefResourceManager. See the "resource_manager" target for an
-        // example implementation.
-        const std::string& resource_path = shared::GetResourcePath(url);
-
-        if (!resource_path.empty())
-            return shared::GetResourceHandler(resource_path);
-
-        return nullptr;
+        return resourceManager->GetResourceHandler(browser, frame, request);
     }
 
     bool Client::OnProcessMessageReceived(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame,
@@ -101,5 +166,13 @@ namespace main
     {
         CEF_REQUIRE_UI_THREAD();
         return messageRouter->OnProcessMessageReceived(browser, frame, source_process, message);
+    }
+
+    cef_return_value_t
+    Client::OnBeforeResourceLoad(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame,
+                                 CefRefPtr<CefRequest> request, CefRefPtr<CefRequestCallback> callback)
+    {
+        CEF_REQUIRE_IO_THREAD();
+        return resourceManager->OnBeforeResourceLoad(browser, frame, request, callback);
     }
 }

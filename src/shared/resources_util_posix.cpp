@@ -1,55 +1,63 @@
 #include <include/cef_stream.h>
+#include <iostream>
+
 #include "resources_util.hpp"
+#include <src/main/applicationSettings.hpp>
 
 namespace shared
 {
 	bool FileExists(const char *path)
 	{
-		FILE *f = fopen(path, "rb");
-		if (f)
+		FILE *file = fopen(path, "rb");
+		if (file)
 		{
-			fclose(f);
+			fclose(file);
 			return true;
 		}
 		return false;
 	}
 
-	bool ReadFileToString(const char *path, std::string &data)
+	bool ReadFileToString(std::string &path, std::string &data)
 	{
 		// Implementation adapted from main/file_util.cc
-		FILE *file = fopen(path, "rb");
+		FILE *file = fopen(path.c_str(), "rb");
+
 		if (!file)
 			return false;
 
-		char buf[UINT16_MAX];
+		char buffer[INT32_MAX];
+
 		size_t len;
-		while ((len = fread(buf, 1, sizeof(buf), file)) > 0)
-			data.append(buf, len);
+
+		while ((len = fread(buffer, 1, sizeof(buffer), file)) > 0)
+			data.append(buffer, len);
 		fclose(file);
 
 		return true;
 	}
 
-	bool GetResourceString(const std::string &resource_path,
-						   std::string &out_data)
+	bool GetResourceString(const std::string &resource_path, std::string &out_data)
 	{
-		std::string path = GetProjectExecutableDir();
+		std::string path = GetResourceDir();
+
 		if (path.empty())
 			return false;
 
-		path.append("/");
 		path.append(resource_path);
 
-		return ReadFileToString(path.c_str(), out_data);
+        std::cout<<std::endl;
+        std::cout<<"GetResourceString:"<<path<<std::endl;
+
+        bool xxe = ReadFileToString(path, out_data);
+		return xxe;
 	}
 
 	CefRefPtr <CefStreamReader> GetResourceReader(const std::string &resource_path)
 	{
-        std::string path = GetProjectExecutableDir();
+        std::string path = GetResourceDir();
 		if (path.empty())
 			return nullptr;
 
-		path.append("/");
 		path.append(resource_path);
 
 		if (!FileExists(path.c_str()))

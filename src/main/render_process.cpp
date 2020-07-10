@@ -1,4 +1,5 @@
 #include "render_process.hpp"
+#include "applicationSettings.hpp"
 
 namespace main
 {
@@ -31,5 +32,12 @@ namespace main
                                                CefProcessId source_process, CefRefPtr<CefProcessMessage> message)
     {
         return messageRouter->OnProcessMessageReceived(browser, frame, source_process, message);
+    }
+
+    void CefRendererApp::OnRegisterCustomSchemes(CefRawPtr<CefSchemeRegistrar> registrar)
+    {
+        // Register the custom scheme as standard and secure.
+        // Must be the same implementation in all processes.
+        registrar->AddCustomScheme(config::APP_URL_SCHEME, config::APP_SCHEME_REGISTRATION_OPTIONS);
     }
 }

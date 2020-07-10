@@ -17,6 +17,8 @@ namespace main
         // CefApp methods:
         CefRefPtr <CefRenderProcessHandler> GetRenderProcessHandler() override;
 
+        void OnRegisterCustomSchemes(CefRawPtr<CefSchemeRegistrar> registrar) override;
+
         // CefRenderProcessHandler methods:
         void OnWebKitInitialized() override;
 
